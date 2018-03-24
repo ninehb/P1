@@ -1,4 +1,5 @@
 revision 596 March 23rd, 2018
+1) trunk r586 fix makedirs crash - issue #345 (#350) 
 
 # Keras RetinaNet [![Build Status](https://travis-ci.org/fizyr/keras-retinanet.svg?branch=master)](https://travis-ci.org/fizyr/keras-retinanet) [![DOI](https://zenodo.org/badge/100249425.svg)](https://zenodo.org/badge/latestdoi/100249425)
 
