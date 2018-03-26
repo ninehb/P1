@@ -30,6 +30,8 @@ if __name__ == "__main__" and __package__ is None:
 
 # Change these to absolute imports if you copy this script outside the keras_retinanet package.
 from ..preprocessing.pascal_voc import PascalVocGenerator
+from ..preprocessing.basketball import BasketBallGenerator
+from ..preprocessing.wbc import WBCGenerator
 from ..preprocessing.csv_generator import CSVGenerator
 from ..preprocessing.kitti import KittiGenerator
 from ..preprocessing.open_images import OpenImagesGenerator
@@ -65,6 +67,18 @@ def create_generator(args):
         generator = PascalVocGenerator(
             args.pascal_path,
             args.pascal_set,
+            transform_generator=transform_generator
+        )
+    elif args.dataset_type == 'basketball':
+        generator = BasketBallGenerator(
+            args.basketball_path,
+            args.basketball_set,
+            transform_generator=transform_generator
+        )
+    elif args.dataset_type == 'wbc':
+        generator = WBCGenerator(
+            args.wbc_path,
+            args.wbc_set,
             transform_generator=transform_generator
         )
     elif args.dataset_type == 'csv':
@@ -107,6 +121,14 @@ def parse_args(args):
     pascal_parser = subparsers.add_parser('pascal')
     pascal_parser.add_argument('pascal_path', help='Path to dataset directory (ie. /tmp/VOCdevkit).')
     pascal_parser.add_argument('--pascal-set',  help='Name of the set to show (defaults to test).', default='test')
+
+    basketball_parser = subparsers.add_parser('basketball')
+    basketball_parser.add_argument('basketball_path', help='Path to dataset directory (ie. "C:\data\basketball").')
+    basketball_parser.add_argument('--basketball-set',  help='Name of the set to show (defaults to test).', default='test')
+
+    wbc_parser = subparsers.add_parser('wbc')
+    wbc_parser.add_argument('wbc_path', help='Path to dataset directory (ie. "C:\SVN\faster_rcnn\TensorFlow\windows\data\WBC_devkit\data").')
+    wbc_parser.add_argument('--wbc-set',  help='Name of the set to show (defaults to test).', default='test')
 
     kitti_parser = subparsers.add_parser('kitti')
     kitti_parser.add_argument('kitti_path', help='Path to dataset directory (ie. /tmp/kitti).')
