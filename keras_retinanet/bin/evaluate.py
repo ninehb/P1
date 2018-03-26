@@ -31,6 +31,8 @@ if __name__ == "__main__" and __package__ is None:
 
 # Change these to absolute imports if you copy this script outside the keras_retinanet package.
 from ..preprocessing.pascal_voc import PascalVocGenerator
+from ..preprocessing.basketball import BasketBallGenerator
+from ..preprocessing.wbc import WBCGenerator
 from ..preprocessing.csv_generator import CSVGenerator
 from ..utils.keras_version import check_keras_version
 from ..utils.eval import evaluate
@@ -57,6 +59,16 @@ def create_generator(args):
             args.pascal_path,
             'test',
         )
+    elif args.dataset_type == 'basketball':
+        validation_generator = BasketBallGenerator(
+            args.basketball_path,
+            'val',
+        )
+    elif args.dataset_type == 'wbc':
+        validation_generator = WBCGenerator(
+            args.wbc_path,
+            'test',
+        )
     elif args.dataset_type == 'csv':
         validation_generator = CSVGenerator(
             args.annotations,
@@ -78,6 +90,12 @@ def parse_args(args):
 
     pascal_parser = subparsers.add_parser('pascal')
     pascal_parser.add_argument('pascal_path', help='Path to dataset directory (ie. /tmp/VOCdevkit).')
+
+    basketball_parser = subparsers.add_parser('basketball')
+    basketball_parser.add_argument('basketball_path', help='Path to dataset directory (ie. "C:\data\basketball").')
+
+    wbc_parser = subparsers.add_parser('wbc')
+    wbc_parser.add_argument('wbc_path', help='Path to dataset directory (ie. "C:\SVN\faster_rcnn\TensorFlow\windows\data\WBC_devkit\data").')
 
     csv_parser = subparsers.add_parser('csv')
     csv_parser.add_argument('annotations', help='Path to CSV file containing annotations for evaluation.')
