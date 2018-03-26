@@ -37,6 +37,8 @@ from .. import layers
 from ..callbacks import RedirectModel
 from ..callbacks.eval import Evaluate
 from ..preprocessing.pascal_voc import PascalVocGenerator
+from ..preprocessing.wbc import WBCGenerator
+from ..preprocessing.basketball import BasketBallGenerator
 from ..preprocessing.csv_generator import CSVGenerator
 from ..preprocessing.kitti import KittiGenerator
 from ..preprocessing.open_images import OpenImagesGenerator
@@ -192,6 +194,32 @@ def create_generators(args):
             'test',
             batch_size=args.batch_size
         )
+    elif args.dataset_type == 'basketball':
+        train_generator = BasketBallGenerator(
+            args.basketball_path,
+            'trainval',
+            transform_generator=transform_generator,
+            batch_size=args.batch_size
+        )
+
+        validation_generator = BasketBallGenerator(
+            args.basketball_path,
+            'val',
+            batch_size=args.batch_size
+        )
+    elif args.dataset_type == 'wbc':
+        train_generator = WBCGenerator(
+            args.wbc_path,
+            'train',
+            transform_generator=transform_generator,
+            batch_size=args.batch_size
+        )
+
+        validation_generator = WBCGenerator(
+            args.wbc_path,
+            'test',
+            batch_size=args.batch_size
+        )
     elif args.dataset_type == 'csv':
         train_generator = CSVGenerator(
             args.annotations,
@@ -299,6 +327,12 @@ def parse_args(args):
 
     pascal_parser = subparsers.add_parser('pascal')
     pascal_parser.add_argument('pascal_path', help='Path to dataset directory (ie. /tmp/VOCdevkit).')
+    
+    basketball_parser = subparsers.add_parser('basketball')
+    basketball_parser.add_argument('basketball_path', help='Path to dataset directory (ie. "C:\data\basketball").')
+
+    wbc_parser = subparsers.add_parser('wbc')
+    wbc_parser.add_argument('wbc_path', help='Path to dataset directory (ie. "C:\SVN\faster_rcnn\TensorFlow\windows\data\WBC_devkit\data").')
 
     kitti_parser = subparsers.add_parser('kitti')
     kitti_parser.add_argument('kitti_path', help='Path to dataset directory (ie. /tmp/kitti).')
@@ -324,7 +358,8 @@ def parse_args(args):
     group.add_argument('--weights',           help='Initialize the model with weights from a file.')
     group.add_argument('--no-weights',        help='Don\'t initialize the model with any weights.', dest='imagenet_weights', action='store_const', const=False)
 
-    parser.add_argument('--backbone',        help='Backbone model used by retinanet.', default='resnet50', type=str)
+    parser.add_argument('--backbone',        help='Backbone model used by retinanet: resnet50, resnet101, resnet152, mobilenet128_1.0, mobilenet160_0.75, mobilenet192_0.50, mobilenet224_0.25.', default='resnet50', type=str)
+    #parser.add_argument('--backbone',        help='Backbone model used by retinanet.', default='resnet50', type=str)
     parser.add_argument('--batch-size',      help='Size of the batches.', default=1, type=int)
     parser.add_argument('--gpu',             help='Id of the GPU to use (as reported by nvidia-smi).')
     parser.add_argument('--multi-gpu',       help='Number of GPUs to use for parallel processing.', type=int, default=0)
